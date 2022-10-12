@@ -4,30 +4,63 @@
       <h1 class="title">ToDo )))</h1>
     </header>
     <section class="create">
-      <input type="text" class="create__input" />
-      <button class="btn">Добавить</button>
+      <input type="text" class="create__input" v-model="todoInput" />
+      <button class="btn" @click="add">Добавить</button>
     </section>
     <section class="todo-wrapper">
       <ul class="todo-list">
-        <li class="todo-item">
-          <input type="checkbox" class="item-select" />
-          <span class="item-text"
-            >Create fantastic todo-app and get a job!</span
-          >
+        <li
+          class="todo-item"
+          v-for="(item, idx) in paginatedList"
+          :key="idx"
+          :class="{
+            completed: item.completed,
+            deleted: item.deleted,
+            selected: item.selected,
+          }"
+        >
+          <input type="checkbox" class="item-select" v-model="item.selected" />
+          <span class="item-text">{{ item.text }}</span>
           <div class="item-btn-wrapper">
-            <button class="item-btn item-btn--c">
+            <button
+              class="item-btn item-btn--c"
+              @click="complete(item)"
+              v-if="!item.completed"
+            >
               <img src="./assets/complete.png" width="25" height="25" />
             </button>
-            <button class="item-btn item-btn--d">
+            <button class="item-btn item-btn--d" @click="remove(item)">
               <img src="./assets/delete.png" width="25" height="25" />
             </button>
           </div>
         </li>
       </ul>
     </section>
-    <section class="control">
-      <button class="btn">Выполнить</button>
-      <button class="btn">Удалить</button>
+    <section class="pagination" v-if="paginatedList.length">
+      <button
+        class="pag-btn"
+        :disabled="currentPage == 1"
+        @click="currentPage -= 1"
+      >
+        <img src="./assets/back.png" width="35" height="35" />
+      </button>
+      <div class="pag-text">
+        <span class="current">{{ currentPage }}</span>
+        <span> из </span>
+        <span class="max">{{ maxPage }}</span>
+      </div>
+      <button
+        class="pag-btn"
+        :disabled="currentPage == maxPage"
+        @click="currentPage += 1"
+      >
+        <img src="./assets/forward.png" width="35" height="35" />
+      </button>
+
+      <template v-if="selectedList.length">
+        <button class="btn btn--l" @click="completeAll">Выполнить</button>
+        <button class="btn btn--r" @click="removeAll">Удалить</button>
+      </template>
     </section>
   </div>
 </template>
@@ -108,6 +141,24 @@
   cursor: pointer;
   transition: all 0.2s linear;
 
+  &--l {
+    position: absolute;
+
+    left: 1rem;
+    top: 50%;
+
+    transform: translateY(-50%);
+  }
+
+  &--r {
+    position: absolute;
+
+    right: 1rem;
+    top: 50%;
+
+    transform: translateY(-50%);
+  }
+
   &:hover,
   &:focus {
     outline: none;
@@ -124,6 +175,7 @@
     list-style: none;
 
     width: 100%;
+    min-height: 355px;
 
     display: flex;
     flex-direction: column;
@@ -139,6 +191,20 @@
       align-items: center;
 
       position: relative;
+
+      transition: all 0.3s linear;
+
+      &.completed {
+        opacity: 0.5;
+      }
+
+      &.deleted {
+        opacity: 0;
+      }
+
+      &.selected {
+        box-shadow: 0 0 1rem #000;
+      }
 
       .item-select {
         margin-right: 2rem;
@@ -200,13 +266,146 @@
   }
 }
 
-.control {
+.pagination {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
 
-  width: 100%;
-  max-width: 300px;
+  position: relative;
 
-  margin: 0 auto;
+  .pag-text {
+    font-size: 1.3rem;
+    margin: 0 1rem;
+  }
+
+  .pag-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 0.3rem;
+
+    border: 2px solid transparent;
+    border-radius: 0.3rem;
+
+    background-color: rgb(255, 128, 0);
+
+    cursor: pointer;
+    transition: all 0.2s linear;
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: default;
+
+      &:focus,
+      &:hover {
+        outline: none;
+        box-shadow: none;
+        border-color: transparent;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+      box-shadow: 0 0 1rem #fff;
+      border-color: #fff;
+    }
+  }
 }
 </style>
+
+<script>
+import { getTodoList, setTodoList } from "./localStorage";
+
+export default {
+  data() {
+    return {
+      todoList: [],
+      todoInput: "",
+      currentPage: 1,
+    };
+  },
+
+  created() {
+    getTodoList().then((list) => {
+      if (list) this.todoList = list;
+    });
+  },
+
+  watch: {
+    currentPage() {
+      if (this.currentPage < 1) this.currentPage = 1;
+      if (this.currentPage > this.maxPage) this.currentPage = this.maxPage;
+    },
+    todoList() {
+      if (this.currentPage > this.maxPage) this.currentPage = this.maxPage;
+
+      setTodoList(this.todoList);
+    },
+  },
+
+  computed: {
+    startIndex() {
+      return (this.currentPage - 1) * 5;
+    },
+    endIndex() {
+      return this.currentPage * 5 - 1;
+    },
+    paginatedList() {
+      return this.todoList.slice(this.startIndex, this.endIndex + 1);
+    },
+    selectedList() {
+      return this.todoList.filter((el) => el.selected);
+    },
+    maxPage() {
+      return this.todoList.length ? Math.ceil(this.todoList.length / 5) : 1;
+    },
+  },
+
+  methods: {
+    add() {
+      if (this.todoInput == "") return;
+
+      const todoItem = {
+        text: this.todoInput,
+        selected: false,
+        completed: false,
+        deleted: false,
+      };
+
+      this.todoList = [
+        ...this.todoList.filter((el) => !el.completed),
+        todoItem,
+        ...this.todoList.filter((el) => el.completed),
+      ];
+      this.todoInput = "";
+    },
+    remove(item) {
+      item.deleted = true;
+
+      setTimeout(() => {
+        this.todoList = this.todoList.filter((el) => el != item);
+      }, 300);
+    },
+    removeAll() {
+      for (let item of this.selectedList) {
+        this.remove(item);
+      }
+    },
+    complete(item) {
+      item.completed = true;
+      item.selected = false;
+
+      setTimeout(() => {
+        this.todoList = [...this.todoList.filter((el) => el != item), item];
+      }, 300);
+    },
+    completeAll() {
+      for (let item of this.selectedList) {
+        this.complete(item);
+      }
+    },
+  },
+};
+</script>
