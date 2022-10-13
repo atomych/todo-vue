@@ -1,0 +1,33 @@
+.create {
+  padding: 2rem 1rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__input {
+    width: 100%;
+    max-width: 500px;
+
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+
+    font-size: 1.5rem;
+
+    background-color: rgb(255, 128, 0);
+
+    border: 2px solid #fff;
+    border-radius: 1rem;
+
+    transition: all 0.2s linear;
+
+    &:focus {
+      outline: none;
+
+      background-color: #fff;
+
+      box-shadow: 0 0 0.5rem #000;
+    }
+  }
+}

@@ -1,0 +1,81 @@
+.control {
+  display: flex;
+
+  padding: 0 3rem;
+
+  &__item {
+    background-color: rgb(255, 128, 0);
+    border: none;
+    border-radius: 0.3rem;
+
+    cursor: pointer;
+    transition: all 0.2s linear;
+
+    margin-right: 2rem;
+    padding: 0.2rem;
+
+    font-size: 1.2rem;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    img {
+      display: block;
+      margin-left: 0.3rem;
+    }
+
+    &:last-child {
+      margin-right: 0;
+
+      &::after {
+        width: 0;
+        height: 0;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+
+      &::before {
+        width: 100%;
+      }
+    }
+
+    &::after {
+      content: "";
+      display: block;
+
+      position: absolute;
+      top: 0;
+      right: -1rem;
+
+      width: 2px;
+      height: 100%;
+
+      background-color: #000;
+
+      cursor: default;
+    }
+
+    &::before {
+      content: "";
+      display: block;
+
+      position: absolute;
+      bottom: -0.2rem;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: 0;
+      height: 2px;
+
+      background-color: #000;
+
+      transition: all 0.2s linear;
+    }
+  }
+}

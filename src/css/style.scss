@@ -1,0 +1,30 @@
+.container {
+  width: 100%;
+  max-width: 1100px;
+
+  height: 100vh;
+
+  margin: 0 auto;
+
+  background-color: rgb(255, 128, 0);
+  box-shadow: 0 0 1rem #000;
+}
+
+.header {
+  padding: 2rem 1rem;
+
+  .title {
+    width: 100%;
+    text-align: center;
+
+    font-size: 3rem;
+    color: #fff;
+    letter-spacing: 0.2rem;
+  }
+}
+
+@import "./modules/create.scss";
+@import "./modules/btn.scss";
+@import "./modules/list.scss";
+@import "./modules/pagination.scss";
+@import "./modules/control.scss";

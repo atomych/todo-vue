@@ -1,0 +1,107 @@
+.todo-wrapper {
+  padding: 2rem 3rem;
+
+  .empty {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
+  .todo-list {
+    list-style: none;
+
+    width: 100%;
+    min-height: 355px;
+
+    display: flex;
+    flex-direction: column;
+
+    .todo-item {
+      margin-bottom: 1rem;
+      padding: 1rem;
+
+      background-color: #fff;
+      border-radius: 0.5rem;
+
+      display: flex;
+      align-items: center;
+
+      position: relative;
+
+      transition: all 0.3s linear;
+
+      &.completed {
+        opacity: 0.5;
+      }
+
+      &.deleted {
+        opacity: 0;
+      }
+
+      &.selected {
+        box-shadow: 0 0 1rem #000;
+      }
+
+      .item-select {
+        margin-right: 2rem;
+
+        width: 20px;
+        height: 20px;
+
+        cursor: pointer;
+      }
+
+      .item-text {
+        font-size: 1.5rem;
+
+        max-width: 400px;
+        overflow: hidden;
+      }
+
+      .item-btn-wrapper {
+        position: absolute;
+
+        top: 50%;
+        right: 1rem;
+
+        transform: translateY(-50%);
+
+        display: flex;
+
+        .item-btn {
+          margin-right: 0.5rem;
+          padding: 0.3rem;
+
+          border: none;
+          border-radius: 0.2rem;
+
+          background-color: #fff;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          cursor: pointer;
+          transition: all 0.2s linear;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          &--c:hover,
+          &--c:focus {
+            outline: none;
+            background-color: rgb(22, 188, 0);
+            box-shadow: 0 0 0.5rem #000;
+          }
+
+          &--d:hover,
+          &--d:focus {
+            outline: none;
+            background-color: rgb(210, 0, 0);
+            box-shadow: 0 0 0.5rem #000;
+          }
+        }
+      }
+    }
+  }
+}
