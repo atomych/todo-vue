@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" ref="main">
     <header class="header">
       <h1 class="title">ToDo )))</h1>
     </header>
@@ -29,6 +29,9 @@
       </template>
     </section>
     <section class="todo-wrapper">
+      <section class="empty" v-if="!todoList.length">
+        Список заданий пуст...
+      </section>
       <ul class="todo-list">
         <li
           class="todo-item"
@@ -41,7 +44,7 @@
           }"
         >
           <input type="checkbox" class="item-select" v-model="item.selected" />
-          <span class="item-text">{{ item.text }}</span>
+          <span class="item-text" v-text="item.text"></span>
           <div class="item-btn-wrapper">
             <button
               class="item-btn item-btn--c"
@@ -57,7 +60,7 @@
         </li>
       </ul>
     </section>
-    <section class="pagination" v-if="paginatedList.length">
+    <section class="pagination" v-if="maxPage > 1">
       <button
         class="pag-btn"
         :disabled="currentPage == 1"
@@ -269,6 +272,11 @@
 .todo-wrapper {
   padding: 2rem 3rem;
 
+  .empty {
+    text-align: center;
+    font-size: 1.5rem;
+  }
+
   .todo-list {
     list-style: none;
 
@@ -313,6 +321,9 @@
 
       .item-text {
         font-size: 1.5rem;
+
+        max-width: 400px;
+        overflow: hidden;
       }
 
       .item-btn-wrapper {
@@ -414,17 +425,6 @@
 </style>
 
 <script>
-//! Список следующих изменений
-//? [ ] Надпись, когда нет заданий в списке
-//? [ ] Кастомный чекбокс
-//? [ ] Панель управления выбраными элементами в одном месте
-//? [ ] Кнопка управления - выбрать все
-//? [ ] Кнопка управления - удалить все
-//? [ ] Кнопка управления - выполнить все
-//? [ ] Решить баг - при удалении фокус переходит на следующий элемент(на кнопку удалить)
-//? [ ] Мобильная верстка
-//? [ ] Возможное разделение на компоненты в самом конце
-
 import { getTodoList, setTodoList } from "./localStorage";
 
 export default {
@@ -439,6 +439,10 @@ export default {
   created() {
     getTodoList().then((list) => {
       if (list) this.todoList = list;
+
+      for (let item of this.todoList) {
+        item.selected = false;
+      }
     });
   },
 
@@ -504,7 +508,6 @@ export default {
     },
     complete(item) {
       item.completed = true;
-      item.selected = false;
 
       setTimeout(() => {
         this.todoList = [...this.todoList.filter((el) => el != item), item];
@@ -512,12 +515,19 @@ export default {
     },
     completeAll() {
       for (let item of this.selectedList) {
-        this.complete(item);
+        if (!item.completed) this.complete(item);
+        item.selected = false;
       }
     },
     selectAll() {
-      for (let item of this.todoList) {
-        item.selected = true;
+      if (this.todoList.length != this.selectedList.length) {
+        for (let item of this.todoList) {
+          item.selected = true;
+        }
+      } else {
+        for (let item of this.todoList) {
+          item.selected = false;
+        }
       }
     },
   },
