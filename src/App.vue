@@ -4,8 +4,29 @@
       <h1 class="title">ToDo )))</h1>
     </header>
     <section class="create">
-      <input type="text" class="create__input" v-model="todoInput" />
+      <input
+        type="text"
+        class="create__input"
+        v-model="todoInput"
+        @keydown.enter="add"
+      />
       <button class="btn" @click="add">Добавить</button>
+    </section>
+    <section class="control" v-if="todoList.length">
+      <button class="control__item" @click="selectAll">
+        Выделить все
+        <img src="./assets/selectAll.png" alt="" width="25" height="25" />
+      </button>
+      <template v-if="selectedList.length">
+        <button class="control__item" @click="removeAll">
+          Удалить выбранные
+          <img src="./assets/deleteAll.png" alt="" width="25" height="25" />
+        </button>
+        <button class="control__item" @click="completeAll">
+          Выполнить выбранные
+          <img src="./assets/completeAll.png" alt="" width="25" height="25" />
+        </button>
+      </template>
     </section>
     <section class="todo-wrapper">
       <ul class="todo-list">
@@ -56,11 +77,6 @@
       >
         <img src="./assets/forward.png" width="35" height="35" />
       </button>
-
-      <template v-if="selectedList.length">
-        <button class="btn btn--l" @click="completeAll">Выполнить</button>
-        <button class="btn btn--r" @click="removeAll">Удалить</button>
-      </template>
     </section>
   </div>
 </template>
@@ -165,6 +181,88 @@
     color: #fff;
     background-color: rgb(255, 128, 0);
     box-shadow: 0 0 1rem #fff;
+  }
+}
+
+.control {
+  display: flex;
+
+  padding: 0 3rem;
+
+  &__item {
+    background-color: rgb(255, 128, 0);
+    border: none;
+    border-radius: 0.3rem;
+
+    cursor: pointer;
+    transition: all 0.2s linear;
+
+    margin-right: 2rem;
+    padding: 0.2rem;
+
+    font-size: 1.2rem;
+
+    display: flex;
+    align-items: center;
+
+    position: relative;
+
+    img {
+      display: block;
+      margin-left: 0.3rem;
+    }
+
+    &:last-child {
+      margin-right: 0;
+
+      &::after {
+        width: 0;
+        height: 0;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      outline: none;
+
+      &::before {
+        width: 100%;
+      }
+    }
+
+    &::after {
+      content: "";
+      display: block;
+
+      position: absolute;
+      top: 0;
+      right: -1rem;
+
+      width: 2px;
+      height: 100%;
+
+      background-color: #000;
+
+      cursor: default;
+    }
+
+    &::before {
+      content: "";
+      display: block;
+
+      position: absolute;
+      bottom: -0.2rem;
+      left: 50%;
+
+      transform: translateX(-50%);
+
+      width: 0;
+      height: 2px;
+
+      background-color: #000;
+
+      transition: all 0.2s linear;
+    }
   }
 }
 
@@ -316,6 +414,17 @@
 </style>
 
 <script>
+//! Список следующих изменений
+//? [ ] Надпись, когда нет заданий в списке
+//? [ ] Кастомный чекбокс
+//? [ ] Панель управления выбраными элементами в одном месте
+//? [ ] Кнопка управления - выбрать все
+//? [ ] Кнопка управления - удалить все
+//? [ ] Кнопка управления - выполнить все
+//? [ ] Решить баг - при удалении фокус переходит на следующий элемент(на кнопку удалить)
+//? [ ] Мобильная верстка
+//? [ ] Возможное разделение на компоненты в самом конце
+
 import { getTodoList, setTodoList } from "./localStorage";
 
 export default {
@@ -404,6 +513,11 @@ export default {
     completeAll() {
       for (let item of this.selectedList) {
         this.complete(item);
+      }
+    },
+    selectAll() {
+      for (let item of this.todoList) {
+        item.selected = true;
       }
     },
   },
