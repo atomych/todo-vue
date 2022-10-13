@@ -14,24 +14,6 @@
   cursor: pointer;
   transition: all 0.2s linear;
 
-  &--l {
-    position: absolute;
-
-    left: 1rem;
-    top: 50%;
-
-    transform: translateY(-50%);
-  }
-
-  &--r {
-    position: absolute;
-
-    right: 1rem;
-    top: 50%;
-
-    transform: translateY(-50%);
-  }
-
   &:hover,
   &:focus {
     outline: none;

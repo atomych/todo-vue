@@ -15,16 +15,16 @@
     <section class="control" v-if="todoList.length">
       <button class="control__item" @click="selectAll">
         Выделить все
-        <img src="./assets/selectAll.png" alt="" width="25" height="25" />
+        <img src="./assets/selectAll.png" width="25" height="25" />
       </button>
       <template v-if="selectedList.length">
         <button class="control__item" @click="removeAll">
           Удалить выбранные
-          <img src="./assets/deleteAll.png" alt="" width="25" height="25" />
+          <img src="./assets/deleteAll.png" width="25" height="25" />
         </button>
         <button class="control__item" @click="completeAll">
           Выполнить выбранные
-          <img src="./assets/completeAll.png" alt="" width="25" height="25" />
+          <img src="./assets/completeAll.png" width="25" height="25" />
         </button>
       </template>
     </section>
@@ -43,17 +43,27 @@
             selected: item.selected,
           }"
         >
-          <input type="checkbox" class="item-select" v-model="item.selected" />
+          <input
+            type="checkbox"
+            class="item-select"
+            v-model="item.selected"
+            title="Выделить"
+          />
           <span class="item-text" v-text="item.text"></span>
           <div class="item-btn-wrapper">
             <button
               class="item-btn item-btn--c"
               @click="complete(item)"
               v-if="!item.completed"
+              title="Выполнить"
             >
               <img src="./assets/complete.png" width="25" height="25" />
             </button>
-            <button class="item-btn item-btn--d" @click="remove(item)">
+            <button
+              class="item-btn item-btn--d"
+              @click="remove(item)"
+              title="Удалить"
+            >
               <img src="./assets/delete.png" width="25" height="25" />
             </button>
           </div>
@@ -65,6 +75,7 @@
         class="pag-btn"
         :disabled="currentPage == 1"
         @click="currentPage -= 1"
+        title="Назад"
       >
         <img src="./assets/back.png" width="35" height="35" />
       </button>
@@ -77,6 +88,7 @@
         class="pag-btn"
         :disabled="currentPage == maxPage"
         @click="currentPage += 1"
+        title="Вперед"
       >
         <img src="./assets/forward.png" width="35" height="35" />
       </button>
@@ -170,6 +182,7 @@ export default {
     },
     complete(item) {
       item.completed = true;
+      item.selected = false;
 
       setTimeout(() => {
         this.todoList = [...this.todoList.filter((el) => el != item), item];
