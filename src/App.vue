@@ -19,11 +19,11 @@
       </button>
       <template v-if="selectedList.length">
         <button class="control__item" @click="removeAll">
-          Удалить выбранные
+          {{ mobile ? "" : "Удалить выбранные" }}
           <img src="./assets/deleteAll.png" width="25" height="25" />
         </button>
         <button class="control__item" @click="completeAll">
-          Выполнить выбранные
+          {{ mobile ? "" : "Выполнить выбранные" }}
           <img src="./assets/completeAll.png" width="25" height="25" />
         </button>
       </template>
@@ -107,6 +107,7 @@ export default {
       todoList: [],
       todoInput: "",
       currentPage: 1,
+      mobile: false,
     };
   },
 
@@ -118,6 +119,14 @@ export default {
         item.selected = false;
       }
     });
+  },
+
+  mounted() {
+    const width = window.innerWidth;
+
+    if (width <= 760) {
+      this.mobile = true;
+    }
   },
 
   watch: {
