@@ -122,11 +122,13 @@ export default {
   },
 
   mounted() {
-    const width = window.innerWidth;
+    this.resizeWindow();
 
-    if (width <= 760) {
-      this.mobile = true;
-    }
+    window.addEventListener("resize", this.resizeWindow);
+  },
+
+  unmounted() {
+    window.removeEventListener("resize", this.resizeWindow);
   },
 
   watch: {
@@ -212,6 +214,15 @@ export default {
         for (let item of this.todoList) {
           item.selected = false;
         }
+      }
+    },
+    resizeWindow() {
+      const width = window.innerWidth;
+
+      if (width <= 760) {
+        this.mobile = true;
+      } else {
+        this.mobile = false;
       }
     },
   },
