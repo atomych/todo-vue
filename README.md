@@ -1,8 +1,6 @@
 # ToDo App
 
-```
-
-#Стек: 
+# Стек: 
 ## HTML
 ## CSS
 ## SASS
