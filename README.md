@@ -1,11 +1,9 @@
-# ToDo
+# ToDo App
 
 ```
 
-## Команды для запуска
-
-git clone https://github.com/atomych/todo.git
-
-npm install
-
-npm run serve
+#Стек: 
+## HTML
+## CSS
+## SASS
+## VUE
